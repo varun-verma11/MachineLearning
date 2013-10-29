@@ -55,7 +55,7 @@ end
 
 
 %{
-    This function return the value which appears the most in the given set
+    This function returns the value which appears the most in the given set
     of values
 %}
 function [ value ] = majority_value(values)

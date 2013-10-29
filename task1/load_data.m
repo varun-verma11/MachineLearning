@@ -4,9 +4,7 @@ function [ x, y ] = load_data( desired_label )
 % tree is to be trained, and returns the remapped clean data [x,y].
 
 %var x = load('cleandata_students.mat')
-matObj = matfile('cleandata_students.mat')
-x = matObj.x
-y = matObj.y
+load ('cleandata_students.mat')
 N = size(y)
 
 for i=1:N
