@@ -1,4 +1,4 @@
-function [ tree ] = desicion_tree_learning( examples, attributes, binary_targets )
+function [ tree ] = decision_tree_learning( examples, attributes, binary_targets )
 %{
     Input arguments:
         EXAMPLES - matrix of given set of examples

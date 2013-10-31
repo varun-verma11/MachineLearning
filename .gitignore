@@ -16,3 +16,7 @@
 *.exe
 *.out
 *.app
+
+# Temp files
+*~
+.DS_Store
