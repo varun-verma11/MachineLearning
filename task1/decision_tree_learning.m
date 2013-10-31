@@ -1,4 +1,5 @@
-function [ tree ] = decision_tree_learning( examples, attributes, binary_targets )
+function [ tree ] = ...
+    decision_tree_learning( examples, attributes, binary_targets )
 %{
     Input arguments:
         EXAMPLES - matrix of given set of examples
@@ -12,19 +13,24 @@ function [ tree ] = decision_tree_learning( examples, attributes, binary_targets
     if (length(unique(binary_targets)) == 1)
         tree = struct('op',[],'kids',[],'class', binary_targets(1));
     elseif (isempty(attributes))
-        tree = struct('op',[],'kids',[],'class', majority_value(binary_targets));
+        tree = struct('op',[],'kids',[],'class', ...
+            majority_value(binary_targets));
     else
         % select the best AU corresponding to greatest information gain
         best = choose_best_attribute(attributes, examples, binary_targets);
         subtree = cell(1, 2);  % left/right subtree
         for i = 0:1 % each possible value v_i of best
             % split and classify examples and targets accordingly
-            [ new_examples, new_targets ] = split_examples_for_attribute(examples, binary_targets, best, i);
+            [ new_examples, new_targets ] = ...
+                split_examples_for_attribute(examples, ...
+                binary_targets, best, i);
             if (isempty(new_examples))
-                subtree{i+1} = struct('op',best,'kids',[],'class', majority_value(binary_targets));
+                subtree{i+1} = struct('op',best,'kids',[],'class', ...
+                    majority_value(binary_targets));
             else
                 sub_attrs = attributes(attributes ~= best);
-                subtree{i+1} = DecisionTreeLearning(new_examples, sub_attrs, new_targets);
+                subtree{i+1} = DecisionTreeLearning(new_examples,...
+                    sub_attrs, new_targets);
             end
         end
         tree = struct('op',best,'kids',[],'class',[]);
@@ -47,9 +53,14 @@ end
         BEST_ATTRIBUTE - return the attribute which has the highest
             information gain
 %}
-function [ best_attribute ] = choose_best_attribute( attributes, examples, targets )
-    information_gains = arrayfun(@(attr) information_gain(attr, examples, targets), attributes);
+function [ best_attribute ] = ...
+    choose_best_attribute( attributes, examples, targets )
+
+    % calculate the information gain for each of the given attributes
+    information_gains = arrayfun(...
+        @(attr) information_gain(attr, examples, targets), attributes);
     [~, index] = max(information_gains);
+    %returns the index of the attribute with the maximum information gain
     best_attribute = attributes(index);
 end
 
@@ -64,7 +75,9 @@ end
 
 
 % splits examples and targets according to column corresponding to best AU
-function [ ret_examples, ret_bin_targets ] = split_examples_for_attribute(examples, targets, best, selector)
+function [ ret_examples, ret_bin_targets ] = ...
+    split_examples_for_attribute(examples, targets, best, selector)
+
     new_examples = examples;
     new_targets = targets;
     last_row_index = 0;
@@ -99,14 +112,22 @@ end
 function [ gain ] = information_gain( attribute, examples, targets )
     % implementation of formula from lecture slides
     [ entropy_all_set, ~]    = entropy(0 ,  0, examples, targets);
-    [ e_negative, prob_negative ] = entropy(attribute , 0, examples, targets);
-    [ e_positive, prob_positive ] = entropy(attribute , 1, examples, targets);
-    gain = entropy_all_set - prob_negative * e_negative - prob_positive * e_positive;
+    [ e_negative, prob_negative ] = ...
+        entropy(attribute , 0, examples, targets);
+    [ e_positive, prob_positive ] = ...
+        entropy(attribute , 1, examples, targets);
+    gain = entropy_all_set - prob_negative * e_negative ...
+        - prob_positive * e_positive;
 end
 
-% calculates the entropy for the given attribute for the given data
-function [ entropy, probability ] = entropy( attribute, set, examples, targets )
-   
+%{
+     calculates the entropy for the given attribute for the given data
+     uses the formula from the slides
+     e(attr) = abs(-P(+ive)*log2(P(+ive))) + abs(-P(+ive)*log2(P(+ive)))
+%}
+function [ entropy, probability ] = ...
+    entropy( attribute, set, examples, targets )
+    
     assert (min(targets) >= 0 && max(targets) <= 1);
     
     prob_postive = 0;
@@ -114,6 +135,7 @@ function [ entropy, probability ] = entropy( attribute, set, examples, targets )
     positives = 0;
     negatives = 0;
 
+    % calculates the number of positiveand negative examples in teh set
     [num_rows, ~] = size(examples);
     for i = 1:num_rows
         if ((attribute == 0 || examples(i,attribute) == set) ...
@@ -128,16 +150,19 @@ function [ entropy, probability ] = entropy( attribute, set, examples, targets )
     total       = positives + negatives;
     probability = total/num_rows;
 
+    % calulates the probablity of positive and negative results in the set
     if (total ~= 0)
         prob_postive = positives/total;
         prob_negative = negatives/total;
     end
 
+    % uses the entropy formula to calculate the entropy
     entropy = abs(-prob_postive * safe_log2(prob_postive)) ...
                 + abs(-prob_negative * safe_log2(prob_negative));
 end
 
 % calculates log2 to avoid NaN exception
+% return 0 if doing a log with 0
 function [ out ] = safe_log2(in)
     if (in == 0)
         out = 0;
