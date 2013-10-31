@@ -94,54 +94,54 @@ end
         examples - given set of examples
         targets  - specifies the au's for the emotion 
     Output:
-        gain     - returns value of ig for the given attr
+        gain     - value of information gain for this attribute
 %}
-function [ gain ] = information_gain( attribute, examples, targets )
+function [ gain ] = information_gain( action_unit, examples, targets )
     % implementation of formula from lecture slides
     [ entropy_all_set, ~]    = entropy(0 ,  0, examples, targets);
-    [ e_negative, prob_negative ] = entropy(attribute , 0, examples, targets);
-    [ e_positive, prob_positive ] = entropy(attribute , 1, examples, targets);
+    [ e_negative, prob_negative ] = entropy(action_unit , 0, examples, targets);
+    [ e_positive, prob_positive ] = entropy(action_unit , 1, examples, targets);
     gain = entropy_all_set - prob_negative * e_negative - prob_positive * e_positive;
 end
 
 % calculates the entropy for the given attribute for the given data
-function [ entropy, probability ] = entropy( attribute, set, examples, targets )
-   
+function [ entropy, probability ] = entropy( au, set, examples, targets )
+
     assert (min(targets) >= 0 && max(targets) <= 1);
-    
-    prob_postive = 0;
-    prob_negative = 0;
-    positives = 0;
-    negatives = 0;
+
+    pos = 0;
+    neg = 0;
+    prob_pos = 0;
+    prob_neg = 0;
 
     [num_rows, ~] = size(examples);
     for i = 1:num_rows
-        if ((attribute == 0 || examples(i,attribute) == set) ...
-                && targets(i) == 0)
-            negatives = negatives + 1;
-        elseif ((attribute == 0 || examples(i,attribute) == set) ...
-                && targets(i) == 1)
-            positives = positives + 1;
+        if ((au == 0 || examples(i,au) == set) && targets(i) == 1)
+            pos = pos + 1;
+        elseif ((au == 0 || examples(i,au) == set) && targets(i) == 0)
+            neg = neg + 1;
         end
     end
 
-    total       = positives + negatives;
+    total       = pos + neg;
     probability = total/num_rows;
 
     if (total ~= 0)
-        prob_postive = positives/total;
-        prob_negative = negatives/total;
+        prob_pos = pos/total;
+        prob_neg = neg/total;
     end
 
-    entropy = abs(-prob_postive * safe_log2(prob_postive)) ...
-                + abs(-prob_negative * safe_log2(prob_negative));
-end
+    entropy = abs(-prob_pos * ml_log2(prob_pos)) ...
+        + abs(-prob_neg * ml_log2(prob_neg));
+    end
 
-% calculates log2 to avoid NaN exception
-function [ out ] = safe_log2(in)
+% custom wrapper around log2 to set log2(0) = 0 instead of NaN
+function [ out ] = ml_log2(in)
     if (in == 0)
         out = 0;
     else
         out = log2(in);
-    end
 end
+end
+
+
