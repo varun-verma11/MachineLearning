@@ -38,10 +38,10 @@ function [trainX, trainY, testX, testY] = ...
         trainY = y(train, :);
 end
 
-function[result] = testTrees(trainedTrees,testX)
+function[result] = testTrees(trainedTrees, testX)
     result = zeros(length(testX),1);
     for i = 1:length(testX)
-        result(i) = getResultFromTreesVer1(trainedTrees,testX(i,:));
+        result(i) = getResultFromTreesVer2('cleandata_students.mat',trainedTrees, testX(i,:));
     end
 end
 
@@ -68,20 +68,20 @@ function[result] = getResultFromTree(tree,instance)
         result  = tree.class;
     else
         if(instance(tree.op))  
-            % if the instance have the feature, go left
-            result = getResultFromTree(tree.kids{1,1},instance);
-        else
-            %go right
+            % if the instance have the feature, go right
             result = getResultFromTree(tree.kids{1,2},instance);
+        else
+            %go left
+            result = getResultFromTree(tree.kids{1,1},instance);
         end
     end
 end
 
-function[result] = getResultFromTreesVer1(trees,instance)
+function[result] = getResultFromTreesVer1(trees, instance)
     results = zeros(length(trees),1);
     % get all results from different trees
     for i = 1:length(trees)
-        results(i) = getResultFromTree(trees(i),instance);
+        results(i) = getResultFromTree(trees(i), instance);
     end
     % find out which class(es) is(are) assigned
     classes = find(results==1);
