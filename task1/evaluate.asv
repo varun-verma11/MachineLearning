@@ -136,7 +136,7 @@ function[sim] = findcosSimilarity(datafile,class,instance)
     for i = 1:length(x)
         if(y(i)==class)
             count = count+1;
-            sum = sum + dot(instance,x(i,:))/(dot(instance,instance)*dot(class,class));
+            sum = sum + dot(instance,class)/(dot(instance,instance)*dot(class,class));
         end
     end
     if(count>0)
@@ -164,7 +164,7 @@ function[prob] = likelihood(datafile, class, instance)
     for i = 1:length(x)
         if(y(i)==class)
             tot_num_of_this_class = tot_num_of_this_class + 1;
-            if(findcosSimilarity(datafile,class,instance)>0.8)
+            if(findcosSimilarity(data,class,instance)>0.8)
                 num = num+1;
             end
         end

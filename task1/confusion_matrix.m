@@ -18,9 +18,7 @@ function [confusion_matrix, classes, number_of_labellings] = ...
     % Every predicted labelling must map to an actual (know to be correct)
     % labelling. This allows us to check if a prediction was correct.
     if length(predicted) ~= length(actual)
-        error('confusion_matrix - input error. The length of the ' + ...
-        '"predicted" labellings must be the same as the length of ' + ...
-        'the "actual" labellings.');
+        error('confusion_matrix - input error.');
     end
     number_of_labellings = length(actual);
     

@@ -1,5 +1,7 @@
-function main () 
+function [predictions] = main () 
     draw_decision_trees_with_clean_data();
+    
+    predictions = evaluate('cleandata_students.mat');
 
 end
 
