@@ -5,7 +5,7 @@ end
 
 function draw_decision_trees_with_clean_data ()
 % Use the clean dataset provided to train 6 trees, one for each emotion
-% Save the visulation generated using the DrawDecisionTree function
+% Save the visualisation generated using the DrawDecisionTree function
     load ('cleandata_students.mat');
     for label=1:6
         binary_targets = load_data (y, label);
