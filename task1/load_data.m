@@ -9,12 +9,11 @@ function [ y ] = load_data( y, desired_label )
 
 % OUTPUT
 % a N*1 vector, which is the remapped binary targets [y].
+    N = size(y, 1);
 
-N = size(y, 1);
-
-for i=1:N
-    y(i) = y(i) == desired_label;
-end
+    for i=1:N
+        y(i) = y(i) == desired_label;
+    end
 
 end
 
