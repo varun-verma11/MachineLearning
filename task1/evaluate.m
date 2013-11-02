@@ -41,7 +41,7 @@ end
 function[result] = testTrees(trainedTrees,testX)
     result = zeros(length(testX),1);
     for i = 1:length(testX)
-        result(i) = getResultFromTreesVer2('cleandata_students.mat',trainedTrees,testX(i,:));
+        result(i) = getResultFromTreesVer1(trainedTrees,testX(i,:));
     end
 end
 
