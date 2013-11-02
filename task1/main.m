@@ -2,6 +2,7 @@ function [predictions] = main ()
     draw_decision_trees_with_clean_data();
     
     predictions = evaluate('cleandata_students.mat');
+    evaluate('noisydata_students.mat');
 
 end
 
@@ -14,6 +15,7 @@ function draw_decision_trees_with_clean_data ()
         attributes = 1:45;
         tree = decision_tree_learning(x, attributes, binary_targets);
         titletext = strcat (num2str(label), emolab2str(label),'_tree');
+        save(titletext, 'tree');
         DrawDecisionTree (tree, titletext);
     end
 end

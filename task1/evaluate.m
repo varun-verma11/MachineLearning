@@ -8,7 +8,6 @@ function [predictions] = evaluate (datafile)
     % Load the indices for 10 fold cross validation
     load (strcat(datafile, '_', num2str(K), '_fold_indices.mat'));
     
-    
     % Start 10-fold cross validation
     for i = 1:K   
         [trainX, trainY, testX, testY] = ...
@@ -21,8 +20,8 @@ function [predictions] = evaluate (datafile)
         %    fprintf('\nf alpha(1) for class %d in fold %d\n',j,i);
         %    display(f_alpha_measure_from_actual_and_predicted(1,j,testY, predictions));
         %end
-            crate = sum(predictions == testY)/length(testY);
-            display(crate);
+        crate = sum(predictions == testY)/length(testY);
+        display(crate);
         % scoring_function(actual, predictions) = score (single float)
         % cv_score = scoring_function(predictions, testY)
     end
@@ -38,6 +37,7 @@ function [trainX, trainY, testX, testY] = ...
         trainX = x(train, :);
         trainY = y(train, :);
 end
+
 function[result] = testTrees(trainedTrees,testX)
     result = zeros(length(testX),1);
     for i = 1:length(testX)
@@ -109,22 +109,22 @@ function[result] = getResultFromTreesVer2(datafile,trees,instance)
     elseif(length(classes)==1)
             result = classes(1);
     else
-             likelihoods = zeros(length(classes),1);
-             % calculate the likelihood of the classes which are assigned 
-             for i= 1:length(classes)
-                likelihoods(i) = likelihood(datafile, classes(i), instance);
-             end
-             % find out which class(es) has max likelihood
-             result_class_index = find(likelihoods==max(likelihoods));
-             if(length(result_class_index)>1)
-                 % if we have classes also have max likelihood, randomly
-                 % reutrn 1
-                rnd = randi(length(result_class_index));
-                result = classes(rnd);
-             else
-                % return the class with max likelihood
-                result = classes(result_class_index);
-             end
+         likelihoods = zeros(length(classes),1);
+         % calculate the likelihood of the classes which are assigned 
+         for i= 1:length(classes)
+            likelihoods(i) = likelihood(datafile, classes(i), instance);
+         end
+         % find out which class(es) has max likelihood
+         result_class_index = find(likelihoods==max(likelihoods));
+         if(length(result_class_index)>1)
+             % if we have classes also have max likelihood, randomly
+             % reutrn 1
+            rnd = randi(length(result_class_index));
+            result = classes(rnd);
+         else
+            % return the class with max likelihood
+            result = classes(result_class_index);
+         end
     end
 end
 function[sim] = findcosSimilarity(datafile,class,instance)
