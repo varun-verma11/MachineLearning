@@ -28,22 +28,22 @@ function evaluate (datafile, version)
             get_data_from_fold (x, y, indices, i);
         trainedTree = tree_training (trainX, trainY);
         
-        trainedTree_title = ...
-             strcat(datafile, '_fold_', num2str(i),'_trainedTree.mat');
-        save(trainedTree_title, 'trainedTree');
+        %trainedTree_title = ...
+        %     strcat(datafile, '_fold_', num2str(i),'_trainedTree.mat');
+        %save(trainedTree_title, 'trainedTree');
          
         % Get predictions from trainedTree using method with version
         predictions = testTrees(trainedTree, testX, version, avgSims); 
-        predictions_title = ...
-            strcat(datafile, '_fold_', num2str(i), ...
-            '_version_', num2str(version),'_predictions.mat');
-        save(predictions_title, 'predictions');
+        %predictions_title = ...
+        %    strcat(datafile, '_fold_', num2str(i), ...
+        %    '_version_', num2str(version),'_predictions.mat');
+        %save(predictions_title, 'predictions');
         
         c_matrix = confusion_matrix(testY, predictions);
-        c_matrix_title = ...
-            strcat(datafile, '_fold_', num2str(i),...
-            '_version_', num2str(version), '_confusion_matrix.mat');
-        save(c_matrix_title, 'c_matrix');
+        %c_matrix_title = ...
+        %    strcat(datafile, '_fold_', num2str(i),...
+        %    '_version_', num2str(version), '_confusion_matrix.mat');
+        %save(c_matrix_title, 'c_matrix');
         avg_c_matrix = avg_c_matrix + c_matrix;
         
         avg_classification_rate = ...
@@ -57,22 +57,22 @@ function evaluate (datafile, version)
     % calculate the average confusion matrix
     avg_c_matrix = avg_c_matrix/10;
     display(avg_c_matrix); 
-    save(strcat(datafile, '_version_', num2str(version),...
-        '_average_confusion_matrix.mat'), 'avg_c_matrix');
+    %save(strcat(datafile, '_version_', num2str(version),...
+    %    '_average_confusion_matrix.mat'), 'avg_c_matrix');
     
     % calculate the average recall and precision rate per class
     % from the average confusion matrix
     % calculate fa measure with recall and precision rates evenly weighted
     class_r_p_rate_fa = calculate_r_p_rate_fa(avg_c_matrix);
     %display(class_r_p_rate_fa);
-    save(strcat(datafile, '_version_', num2str(version),...
-        '_r_p_rate_fa_per_class.mat'), 'class_r_p_rate_fa');
+    %save(strcat(datafile, '_version_', num2str(version),...
+    %    '_r_p_rate_fa_per_class.mat'), 'class_r_p_rate_fa');
     
     % calculate the average classification rate
     avg_classification_rate = avg_classification_rate/10;
     display(avg_classification_rate);
-    save(strcat(datafile, '_version_', num2str(version),...
-        '_avg_classification_rate.mat'), 'avg_classification_rate');
+    %save(strcat(datafile, '_version_', num2str(version),...
+    %    '_avg_classification_rate.mat'), 'avg_classification_rate');
 end
 
 function result = calculate_r_p_rate_fa(confusion_matrix)
@@ -80,19 +80,14 @@ function result = calculate_r_p_rate_fa(confusion_matrix)
 % from a confusion matrix
 % calculate fa measure with recall and precision rates evenly weighted
     num_class = size(confusion_matrix,1);
-    %result = zeros (num_class, 4);
     for class=1:num_class
         true_positives = confusion_matrix(class,class);
         false_positives = sum(confusion_matrix(:, class)) - true_positives;
         false_negatives = sum(confusion_matrix(class, :)) - true_positives;  
         [recall_rate, precision_rate] = recall_and_precision_rates...
-            (true_positives, false_positives, false_negatives);
-        %display(class)
-        %display(recall_rate);
-        %display(precision_rate);       
+            (true_positives, false_positives, false_negatives);     
         
         fa = f_alpha_measure(1, precision_rate, recall_rate);
-        %display (fa);
         
         result(class).class = class;
         result(class).recall_rate = recall_rate;
