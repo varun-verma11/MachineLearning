@@ -64,7 +64,6 @@ function evaluate (datafile, version)
     % from the average confusion matrix
     % calculate fa measure with recall and precision rates evenly weighted
     class_r_p_rate_fa = calculate_r_p_rate_fa(avg_c_matrix);
-    %display(class_r_p_rate_fa);
     %save(strcat(datafile, '_version_', num2str(version),...
     %    '_r_p_rate_fa_per_class.mat'), 'class_r_p_rate_fa');
     
