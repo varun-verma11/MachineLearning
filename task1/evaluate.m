@@ -11,8 +11,8 @@ function evaluate (datafile, version)
     % Initialise average confusion matrix
     avg_c_matrix = zeros (6, 6);
     
-    % Initialise correction rate
-    crate = 0;
+    % Initialise classification rate
+    avg_classification_rate = 0;
     
     avgSims = zeros(6,1);
     if (version == 2)  
@@ -39,7 +39,6 @@ function evaluate (datafile, version)
             '_version_', num2str(version),'_predictions.mat');
         save(predictions_title, 'predictions');
         
-        %fprintf('\nconfusion matrix for fold %d\n',i);
         c_matrix = confusion_matrix(testY, predictions);
         c_matrix_title = ...
             strcat(datafile, '_fold_', num2str(i),...
@@ -47,23 +46,58 @@ function evaluate (datafile, version)
         save(c_matrix_title, 'c_matrix');
         avg_c_matrix = avg_c_matrix + c_matrix;
         
-        %for j = 1:6
-        %    fprintf('\nf alpha(1) for class %d in fold %d\n',j,i);
-        %    display(f_alpha_measure_from_actual_and_predicted(1,j,testY, predictions));
-        %end
-        crate = crate + sum(predictions == testY)/length(testY);
-        %display(crate);
-        % scoring_function(actual, predictions) = score (single float)
-        % cv_score = scoring_function(predictions, testY)
+        avg_classification_rate = ...
+            avg_classification_rate + ...
+            sum(predictions == testY)/length(testY);
     end
-    avg_c_matrix = avg_c_matrix/10;
-    crate = crate/10;
+     
     save(strcat(datafile, '_version_', num2str(version),...
         '_average_confusion_matrix.mat'), 'avg_c_matrix');
+    
     display(datafile);
     display(version);
-    display(avg_c_matrix);  
-    display(crate);
+    
+    % calculate the average confusion matrix
+    avg_c_matrix = avg_c_matrix/10;
+    display(avg_c_matrix); 
+    
+    % calculate the average recall and precision rate per class
+    % from the average confusion matrix
+    % calculate fa measure with recall and precision rates evenly weighted
+    class_r_p_rate_fa = calculate_r_p_rate_fa(avg_c_matrix);
+    %display(class_r_p_rate_fa);
+    save(strcat(datafile, '_version_', num2str(version),...
+        '_r_p_rate_fa_per_class.mat'), 'class_r_p_rate_fa');
+    
+    % calculate the average classification rate
+    avg_classification_rate = avg_classification_rate/10;
+    display(avg_classification_rate);
+end
+
+function result = calculate_r_p_rate_fa(confusion_matrix)
+% calculate the recall and precision rates
+% from a confusion matrix
+% calculate fa measure with recall and precision rates evenly weighted
+    num_class = size(confusion_matrix,1);
+    %result = zeros (num_class, 4);
+    for class=1:num_class
+        true_positives = confusion_matrix(class,class);
+        false_positives = sum(confusion_matrix(:, class)) - true_positives;
+        false_negatives = sum(confusion_matrix(class, :)) - true_positives;  
+        [recall_rate, precision_rate] = recall_and_precision_rates...
+            (true_positives, false_positives, false_negatives);
+        %display(class)
+        %display(recall_rate);
+        %display(precision_rate);       
+        
+        fa = f_alpha_measure(1, precision_rate, recall_rate);
+        %display (fa);
+        
+        result(class).class = class;
+        result(class).recall_rate = recall_rate;
+        result(class).precision_rate = precision_rate;
+        result(class).fa_measurea = fa;
+    end
 end
 
 function [trainX, trainY, testX, testY] = ...
