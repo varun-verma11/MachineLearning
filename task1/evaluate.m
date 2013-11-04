@@ -1,4 +1,4 @@
-function [predictions] = evaluate (datafile)
+function evaluate (datafile, version)
 % Performs 10-fold cross validation
 % INPUT
 % filename of the input data file. e.g. 'cleandata_students.mat'
@@ -8,23 +8,62 @@ function [predictions] = evaluate (datafile)
     % Load the indices for 10 fold cross validation
     load (strcat(datafile, '_', num2str(K), '_fold_indices.mat'));
     
+    % Initialise average confusion matrix
+    avg_c_matrix = zeros (6, 6);
+    
+    % Initialise correction rate
+    crate = 0;
+    
+    avgSims = zeros(6,1);
+    if (version == 2)  
+       data = load('cleandata_students.mat');
+       for j = 1:6
+            avgSims(j) = averageSim(j,data.x,data.y);
+       end
+    end
+    
     % Start 10-fold cross validation
     for i = 1:K   
         [trainX, trainY, testX, testY] = ...
             get_data_from_fold (x, y, indices, i);
         trainedTree = tree_training (trainX, trainY);
-        predictions = testTrees(trainedTree, testX);
-        fprintf('\nconfusion matrix for fold %d\n',i);
-        display(confusion_matrix(testY, predictions));
+        
+        trainedTree_title = ...
+             strcat(datafile, '_fold_', num2str(i),'_trainedTree.mat');
+        save(trainedTree_title, 'trainedTree');
+         
+        % Get predictions from trainedTree using method with version
+        predictions = testTrees(trainedTree, testX, version, avgSims); 
+        predictions_title = ...
+            strcat(datafile, '_fold_', num2str(i), ...
+            '_version_', num2str(version),'_predictions.mat');
+        save(predictions_title, 'predictions');
+        
+        %fprintf('\nconfusion matrix for fold %d\n',i);
+        c_matrix = confusion_matrix(testY, predictions);
+        c_matrix_title = ...
+            strcat(datafile, '_fold_', num2str(i),...
+            '_version_', num2str(version), '_confusion_matrix.mat');
+        save(c_matrix_title, 'c_matrix');
+        avg_c_matrix = avg_c_matrix + c_matrix;
+        
         %for j = 1:6
         %    fprintf('\nf alpha(1) for class %d in fold %d\n',j,i);
         %    display(f_alpha_measure_from_actual_and_predicted(1,j,testY, predictions));
         %end
-        crate = sum(predictions == testY)/length(testY);
-        display(crate);
+        crate = crate + sum(predictions == testY)/length(testY);
+        %display(crate);
         % scoring_function(actual, predictions) = score (single float)
         % cv_score = scoring_function(predictions, testY)
     end
+    avg_c_matrix = avg_c_matrix/10;
+    crate = crate/10;
+    save(strcat(datafile, '_version_', num2str(version),...
+        '_average_confusion_matrix.mat'), 'avg_c_matrix');
+    display(datafile);
+    display(version);
+    display(avg_c_matrix);  
+    display(crate);
 end
 
 function [trainX, trainY, testX, testY] = ...
@@ -38,17 +77,24 @@ function [trainX, trainY, testX, testY] = ...
         trainY = y(train, :);
 end
 
-function[result] = testTrees(trainedTrees, testX)
+function[result] = testTrees(trainedTrees, testX, version, avgSims)
+% version specifies the way we use for tree combination
+% version 1 is the random method
+% version 2 is the likelihood method
     result = zeros(length(testX),1);
-    avgSims = zeros(6,1);
-    data = load('cleandata_students.mat');
-    for i = 1:6
-        avgSims(i) = averageSim(1,data.x,data.y);
-    end
+  
     for i = 1:length(testX)
-        result(i) = getResultFromTreesVer2('cleandata_students.mat',trainedTrees, testX(i,:),avgSims);
+        if (version == 1)
+            result(i) = getResultFromTreesVer1(trainedTrees, testX(i,:));
+        else if (version == 2)
+            result(i) = getResultFromTreesVer2 ...
+               ('cleandata_students.mat',trainedTrees, testX(i,:),avgSims);
+            end
+        end
     end
 end
+
+
 function[result] = averageSim(class,X,Y)
     average = 0;
     counter = 0;
@@ -68,11 +114,11 @@ function[result] = averageSim(class,X,Y)
             end
             average =  average + avg;
         end
-        
-        
+            
     end
     result = average/counter;
 end
+
 function[sim] = findcosSimilarity(instance,compare)
     sim = dot(instance,compare)/((dot(instance,instance)*dot(compare,compare))^0.5);
 end

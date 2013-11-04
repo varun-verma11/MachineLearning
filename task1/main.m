@@ -2,9 +2,9 @@ function main ()
     draw_decision_trees_with_clean_data();
     
     evaluate('cleandata_students.mat', 1);
-    %evaluate('cleandata_students.mat', 2);
+    evaluate('cleandata_students.mat', 2);
     evaluate('noisydata_students.mat',1);
-    %evaluate('noisydata_students.mat',2);
+    evaluate('noisydata_students.mat',2);
 
 end
 
