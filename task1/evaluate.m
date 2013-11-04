@@ -124,6 +124,22 @@ function[result] = testTrees(trainedTrees, testX, version, avgSims)
     end
 end
 
+function[result] = averageSimForNewInstance(class,X,Y,I)
+    average = 0;
+    counter = 0;
+    for i = 1: length(Y)
+        if(Y(i)==class)
+            average = average+ findcosSimilarity(I,X(i,:)); 
+            counter = counter+1;
+
+        end  
+    end
+    if(counter >0)
+        result = average/counter;
+    else
+    result = 0;
+    end
+end
 
 function[result] = averageSim(class,X,Y)
     average = 0;
@@ -214,8 +230,15 @@ function[result] = getResultFromTreesVer2(datafile,trees,instance,avgSims)
     % find out which class(es) is(are) assigned
     classes = find(results==1);
     if(isempty(classes))
-        % randomly assign a class
-        result = randi(6);
+       data = load(datafile);
+        maxi = averageSimForNewInstance(1,data.x,data.y,instance);
+        class = 1;
+        for i=2:6
+            if(averageSimForNewInstance(i,data.x,data.y,instance)>maxi)
+                class=i;
+            end
+        end
+        result = class;
     elseif(length(classes)==1)
             result = classes(1);
     else
