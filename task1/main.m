@@ -1,8 +1,10 @@
-function [predictions] = main () 
+function main () 
     draw_decision_trees_with_clean_data();
     
-    predictions = evaluate('cleandata_students.mat');
-    evaluate('noisydata_students.mat');
+    evaluate('cleandata_students.mat', 1);
+    %evaluate('cleandata_students.mat', 2);
+    evaluate('noisydata_students.mat',1);
+    %evaluate('noisydata_students.mat',2);
 
 end
 
@@ -16,6 +18,6 @@ function draw_decision_trees_with_clean_data ()
         tree = decision_tree_learning(x, attributes, binary_targets);
         titletext = strcat (num2str(label), emolab2str(label),'_tree');
         save(titletext, 'tree');
-        DrawDecisionTree (tree, titletext);
+        %DrawDecisionTree (tree, titletext);
     end
 end

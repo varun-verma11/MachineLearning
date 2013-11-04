@@ -1,4 +1,4 @@
-function [predictions] = evaluate (datafile)
+function [predictions] = evaluate (datafile, version)
 % Performs 10-fold cross validation
 % INPUT
 % filename of the input data file. e.g. 'cleandata_students.mat'
@@ -8,23 +8,47 @@ function [predictions] = evaluate (datafile)
     % Load the indices for 10 fold cross validation
     load (strcat(datafile, '_', num2str(K), '_fold_indices.mat'));
     
+    avg_c_matrix = zeros (6, 6);
+    
     % Start 10-fold cross validation
     for i = 1:K   
         [trainX, trainY, testX, testY] = ...
             get_data_from_fold (x, y, indices, i);
+        
         trainedTree = tree_training (trainX, trainY);
-        predictions = testTrees(trainedTree, testX);
-        fprintf('\nconfusion matrix for fold %d\n',i);
-        display(confusion_matrix(testY, predictions));
+        trainedTree_title = ...
+            strcat(datafile, '_fold_', num2str(i),'_trainedTree.mat');
+        save(trainedTree_title, 'trainedTree');
+        
+        % Get predictions from trainedTree using method with version
+        predictions = testTrees(trainedTree, testX, version); 
+        predictions_title = ...
+            strcat(datafile, '_fold_', num2str(i), ...
+            '_version_', num2str(version),'_predictions.mat');
+        save(predictions_title, 'predictions');
+        
+        %fprintf('\nconfusion matrix for fold %d\n',i);
+        c_matrix = confusion_matrix(testY, predictions);
+        c_matrix_title = ...
+            strcat(datafile, '_fold_', num2str(i),...
+            '_version_', num2str(version), '_confusion_matrix.mat');
+        save(c_matrix_title, 'c_matrix');
+        avg_c_matrix = avg_c_matrix + c_matrix;
         %for j = 1:6
         %    fprintf('\nf alpha(1) for class %d in fold %d\n',j,i);
         %    display(f_alpha_measure_from_actual_and_predicted(1,j,testY, predictions));
         %end
-        crate = sum(predictions == testY)/length(testY);
-        display(crate);
+        %crate = sum(predictions == testY)/length(testY);
+        %display(crate);
         % scoring_function(actual, predictions) = score (single float)
         % cv_score = scoring_function(predictions, testY)
     end
+    avg_c_matrix = avg_c_matrix/10;
+    save(strcat(datafile, '_version_', num2str(version),...
+        '_average_confusion_matrix.mat'), 'avg_c_matrix');
+    display(datafile);
+    display(version);
+    display(avg_c_matrix);  
 end
 
 function [trainX, trainY, testX, testY] = ...
@@ -38,10 +62,19 @@ function [trainX, trainY, testX, testY] = ...
         trainY = y(train, :);
 end
 
-function[result] = testTrees(trainedTrees, testX)
+function[result] = testTrees(trainedTrees, testX, version)
+% version specifies the way we use for tree combination
+% version 1 is the random method
+% version 2 is the likelihood method
     result = zeros(length(testX),1);
     for i = 1:length(testX)
-        result(i) = getResultFromTreesVer2('cleandata_students.mat',trainedTrees, testX(i,:));
+        if (version == 1)
+            result(i) = getResultFromTreesVer1(trainedTrees, testX(i,:));
+        else if (version == 2)
+            result(i) = getResultFromTreesVer2...
+                ('cleandata_students.mat', trainedTrees, testX(i,:));
+            end
+        end
     end
 end
 
