@@ -50,16 +50,15 @@ function evaluate (datafile, version)
             avg_classification_rate + ...
             sum(predictions == testY)/length(testY);
     end
-     
-    save(strcat(datafile, '_version_', num2str(version),...
-        '_average_confusion_matrix.mat'), 'avg_c_matrix');
-    
+   
     display(datafile);
     display(version);
     
     % calculate the average confusion matrix
     avg_c_matrix = avg_c_matrix/10;
     display(avg_c_matrix); 
+    save(strcat(datafile, '_version_', num2str(version),...
+        '_average_confusion_matrix.mat'), 'avg_c_matrix');
     
     % calculate the average recall and precision rate per class
     % from the average confusion matrix
@@ -72,6 +71,8 @@ function evaluate (datafile, version)
     % calculate the average classification rate
     avg_classification_rate = avg_classification_rate/10;
     display(avg_classification_rate);
+    save(strcat(datafile, '_version_', num2str(version),...
+        '_avg_classification_rate.mat'), 'avg_classification_rate');
 end
 
 function result = calculate_r_p_rate_fa(confusion_matrix)
@@ -154,7 +155,8 @@ function[result] = averageSim(class,X,Y)
 end
 
 function[sim] = findcosSimilarity(instance,compare)
-    sim = dot(instance,compare)/((dot(instance,instance)*dot(compare,compare))^0.5);
+    sim = dot(instance,compare)/...
+        ((dot(instance,instance)*dot(compare,compare))^0.5);
 end
 
 
@@ -225,7 +227,8 @@ function[result] = getResultFromTreesVer2(datafile,trees,instance,avgSims)
          likelihoods = zeros(length(classes),1);
          % calculate the likelihood of the classes which are assigned 
          for i= 1:length(classes)
-            likelihoods(i) = likelihood(datafile, classes(i), instance,avgSims(i));
+            likelihoods(i) = likelihood(datafile, classes(i), ...
+                instance,avgSims(i));
          end
          % find out which class(es) has max likelihood
          result_class_index = find(likelihoods==max(likelihoods));

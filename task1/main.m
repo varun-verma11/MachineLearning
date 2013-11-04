@@ -1,11 +1,12 @@
 function main () 
     draw_decision_trees_with_clean_data();
-    
+    K=10;
+    generate_K_fold_indices_for_file ('cleandata_students.mat', K);
+    generate_K_fold_indices_for_file ('noisydata_students.mat', K);
     evaluate('cleandata_students.mat', 1);
     evaluate('cleandata_students.mat', 2);
     evaluate('noisydata_students.mat',1);
     evaluate('noisydata_students.mat',2);
-
 end
 
 function draw_decision_trees_with_clean_data ()
