@@ -46,7 +46,7 @@ function [ann_trained] = GenerateSingleOutputANN(examples, targets)
         [ann_trained, ~] = train(ann, x_train_validation, binarytargets);
 
         % save ANN
-        filename = strcat('NNEmotion', int2str(i));
+        filename = strcat('ANNEmotion_', int2str(i));
         save(filename, 'ann');
     end
 end
