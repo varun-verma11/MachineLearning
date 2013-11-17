@@ -21,7 +21,8 @@ function [ann_trained] = GenerateSingleOutputANN(examples, targets)
         ann = newff(PR, S, TF, BTF, BLF, PF);
 
         % split input data for training and validation
-        [trainx, trainy, validx, validy, ~, ~] = split3(examples, targets);
+        [trainx, trainy, validx, validy, ~, ~] = ...
+            split_data_for_training_validation_test(examples, targets);
         size_train_data = size(trainx);
         x_train_validation = [trainx; validx]';
         y_train_validation = [trainy; validy];
