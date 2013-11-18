@@ -21,11 +21,11 @@ function [ann_trained] = GenerateSingleOutputANN(examples, targets)
         ann = newff(PR, S, TF, BTF, BLF, PF);
 
         % split input data for training and validation
-        [trainx, trainy, validx, validy, ~, ~] = ...
+        [train_x, train_y, valid_x, valid_y, ~, ~] = ...
             split_data_for_training_validation_test(examples, targets);
-        size_train_data = size(trainx);
-        x_train_validation = [trainx; validx]';
-        y_train_validation = [trainy; validy];
+        size_train_data = size(train_x);
+        x_train_validation = [train_x; valid_x]';
+        y_train_validation = [train_y; valid_y];
         size_total_data = size(x_train_validation);
 
         % configure parameters for the nueral network
@@ -34,7 +34,7 @@ function [ann_trained] = GenerateSingleOutputANN(examples, targets)
         ann.trainParam.show = 5;
         ann.trainParam.lr = 0.001;
         ann.divideParam.trainInd = 1:size_train_data;
-        ann.divideParam.valInd   = size_train_data:size_total_data;
+        ann.divideParam.valInd   = size_train_data+1:size_total_data;
 
         % initialise artificial neural network
         ann = init(ann);
@@ -45,10 +45,6 @@ function [ann_trained] = GenerateSingleOutputANN(examples, targets)
 
         % train the generated ANN
         [ann_trained, ~] = train(ann, x_train_validation, binarytargets);
-
-        % save ANN
-        filename = strcat('ANNEmotion_', int2str(i));
-        save(filename, 'ann');
     end
 end
 
