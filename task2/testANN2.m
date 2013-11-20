@@ -38,6 +38,7 @@ function [a,b,c] = combine_result_helper(net,training_x,training_y,j)
     b=0;
     [c,] = linear_regression(0.1:0.1:1,freqs(1:10));
 end
+
 function [a,b] = linear_regression(x,y)
 n = length(x);
 a = (n*sum(x.*y)-sum(x)*sum(y))/(n*sum(x.^2)-(sum(x))^2);

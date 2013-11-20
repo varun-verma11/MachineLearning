@@ -30,7 +30,6 @@ function [training_examples, training_targets, validation_examples,...
 end
 
 function [examples, targets] = sort_data(data)
-
 % sort data according to target value
 data = sort(data, 1);
 
@@ -38,7 +37,5 @@ data = sort(data, 1);
 targets  = data(:,1);
 [ ~, cols ] = size(data);
 examples = data(:,2:cols);
-
-
 end
 

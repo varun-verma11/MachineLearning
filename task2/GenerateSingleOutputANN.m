@@ -54,11 +54,7 @@ end
 function [ output ] = change_output_labels_to_binary( label_matrix, label)
     output = zeros(size(label_matrix));
     for i = 1:size(label_matrix)
-        if (label_matrix(i) == label)
-            output(i) = 1;
-        else
-            output(i) = 0;
-        end
+        output(i) = (label_matrix(i) == label)
     end
     output = output'; % transpose outputs for nntool
-    end
+end

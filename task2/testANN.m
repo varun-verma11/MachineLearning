@@ -1,12 +1,19 @@
-function prediction = testANN(net, x2)
-avgSims = zeros(6,1); 
-data = load('cleandata_students.mat');
-for j = 1:6
-    avgSims(j) = averageSim(j,data.x,data.y);
+function predictions = testANN(net, x2)
+    avgSims = zeros(6,1); 
+    data = load('cleandata_students.mat');
+    for j = 1:6
+        avgSims(j) = averageSim(j,data.x,data.y);
+    end
+
+    N = size(x2, 1);
+    type_of_network = 0;
+    
+    for i = 1:N
+        results = getPredictions(net, x2, type_of_network);
+        predictions = getResultVer2(data,results,x2(:,i),avgSims);
+    end
 end
-%-.- someone finish it
-getResultVer2(data,results,x2(:,j),avgSims);
-end
+
 function[result] = averageSimForNewInstance(class,X,Y,I)
     average = 0;
     counter = 0;
@@ -47,10 +54,14 @@ function[result] = averageSim(class,X,Y)
     end
     result = average/counter;
 end
-% find a way to get results from 6 different networks and store into a vector 
-function[result] = getResultVer2(datafile,results,instance,avgSims)
-    % find out which class(es) is(are) assigned
+
+% Combine 6 outputs to get a single class    
+function result = getResultVer2(datafile,results,instance,avgSims)
+    % find out which class(es) is(are) assigned by the neural network
+    % to the example instance
     classes = find(results==1);
+    
+    % if no classes are assigned
     if(isempty(classes))
        data = load(datafile);
         maxi = averageSimForNewInstance(1,data.x,data.y,instance);
@@ -61,8 +72,12 @@ function[result] = getResultVer2(datafile,results,instance,avgSims)
             end
         end
         result = class;
+        
+    % if one class is assigned
     elseif(length(classes)==1)
             result = classes(1);
+            
+    % if more than one class is assigned
     else
          likelihoods = zeros(length(classes),1);
          % calculate the likelihood of the classes which are assigned 
@@ -83,6 +98,7 @@ function[result] = getResultVer2(datafile,results,instance,avgSims)
          end
     end
 end
+
 function[sim] = findcosSimilarity(instance,compare)
     sim = dot(instance,compare)/...
         ((dot(instance,instance)*dot(compare,compare))^0.5);

@@ -3,10 +3,10 @@
 % outputs only (1/0)
 % Here, just input x,y don't need to use ANNdata
 % Output the best network
-function [result] = cross_validation(instances, labels, index, K,type)
+function [result] = cross_validation(instances, labels, index, K, type)
     training_functions = {'trainbfg','traincgb','traincgf','traincgp','traingda','traingdm','traingdx','trainlm','trainoss','trainrp','trainscg'};
     % we will find the best number of layers, the best number of netrons in
-    % each layers, training functions and best topology
+    % each layer, training functions and best topology
     best_n = 3;
     best_err = 1;
     best_topology = 4;
@@ -52,7 +52,7 @@ function [result] = cross_validation(instances, labels, index, K,type)
                                         temp_net.trainParam.showWindow = false;
                                         temp_net=train(temp_net,tX,tY);
                                         %caculate error rate 
-                                        temp_err = findErrorRate(getPredictions(temp_net, vX,type),validY);
+                                        temp_err = findErrorRate(getPredictions(temp_net, vX, type),validY);
                                         if(temp_err < best_net_err_local)
                                             best_training_function_local = training_functions{z};
                                             best_net_err_local = temp_err;
@@ -94,25 +94,22 @@ function [result] = cross_validation(instances, labels, index, K,type)
             net.trainParam.epochs = 300;
             net.trainParam.showWindow = false;
             net = train(net,train_X, train_Y);
-            display(1-findErrorRate(getPredictions(net, testX_,type),testY));
+                
+            display(1-findErrorRate(getPredictions(net, testX,type),testY));
+    
     end
-    %return a net
-    result =  createNetwork(best_n,train_X,train_Y,best_topology);
+    %return a network that trains on the entire data set 
+    result = createNetwork(best_n, instances,labels, best_topology);
+    
 end
+
 function [trainX, trainY, validX, validY] = ...
     get_data_from_fold (instances, labels, indexs, inde)
-% Gets training and valid data from x, and y using indices in fold i
+% Gets training and valid data from x, and y using indices in fold inde
         test = indexs == inde;
         train = ~test;
         validX = instances(test, :);
         validY = labels(test, :);
         trainX = instances(train, :);
         trainY = labels(train, :);
-end
-function prediction = getPredictions(net, x2,type_of_network)
-if type_of_network==0
-    prediction =NNout2labels(sim(net,x2));
-else
-    prediction = sim(net,x2)>=0.5;
-end
 end
