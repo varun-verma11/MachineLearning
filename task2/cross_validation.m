@@ -4,7 +4,7 @@
 % Here, just input x,y don't need to use ANNdata
 % Output the best network
 function [result] = cross_validation(instances, labels, index, K, type)
-    training_functions = {'trainbfg'} %,'traincgb','traincgf','traincgp','traingda','traingdm','traingdx','trainlm','trainoss','trainrp','trainscg'};
+    training_functions = {'trainbfg','traincgb','traincgf','traincgp','traingda','traingdm','traingdx','trainlm','trainoss','trainrp','trainscg'};
     % we will find the best number of layers, the best number of netrons in
     % each layer, training functions and best topology
     best_n = 3;
