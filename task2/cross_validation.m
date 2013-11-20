@@ -47,12 +47,18 @@ function [result] = cross_validation(instances, labels, index, K, type)
                                     for z = 1 : length(training_functions)
                                         %create a network
                                         temp_net = createNetwork(temp_n,tX,tY,t);
-                                        temp_net.trainFcn = training_functions{z};
-                                        temp_net.trainParam.epochs = 100;
-                                        temp_net.trainParam.showWindow = false;
-                                        temp_net=train(temp_net,tX,tY);
+                                          % configure parameters for the nueral network
+                                            temp_net.divideFcn = DDF;
+                                            temp_net.trainParam.epochs = 100;
+                                            temp_net.trainParam.show = 5;
+                                            temp_net.trainParam.lr = 0.001;
+                                            size_t_y = length(trainY);
+                                            temp_net.divideParam.trainInd = 1:size_t_y;
+                                            temp_net.divideParam.valInd   = size_t_y+1:length(validY)+size_t_y;
+                                            [ann_trained, error_rate] = train(temp_net, [tX;vX], [tY;vY]);
+                                            fprintf('Error Rate: %d', error_rate);
                                         %caculate error rate 
-                                        temp_err = findErrorRate(getPredictions(temp_net, vX, type),validY);
+%                                         temp_err = findErrorRate(getPredictions(temp_net, vX, type),validY);
                                         if(temp_err < best_net_err_local)
                                             best_training_function_local = training_functions{z};
                                             best_net_err_local = temp_err;
