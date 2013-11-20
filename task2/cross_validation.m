@@ -110,11 +110,17 @@ function [result] = cross_validation(instances, labels, index, K, type)
             %display(length(testY_));
             %display(testY_(1));
             %display(1 - mse(net, train_X, train_Y));
-            display(1-findErrorRate(getPredictions(net, testX_,type),testY));
-    
+            %predictions = getPredictions(net, testX_,type);
+            predictions = testANN(net, testX); 
+            display(1-findErrorRate(predictions, testY));
+            
     end
     %return a network that trains on the entire data set 
     result = createNetwork(best_n, instances,labels, best_topology);
+    result.trainFcn = best_training_function;
+    result.trainParam.epochs = 100;
+    result.trainParam.showWindow = false;
+    result = train(result, instances, labels);
 end
 
 function [trainX, trainY, validX, validY] = ...

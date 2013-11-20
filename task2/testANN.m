@@ -4,11 +4,13 @@ function predictions = testANN(net, x2)
     for j = 1:6
         avgSims(j) = averageSim(j,data.x,data.y);
     end
-
+       
     N = size(x2, 1);
+    [testX_,~] = ANNdata(testX,~);
     type_of_network = 0;
     
     for i = 1:N
+        
         results = getPredictions(net, x2, type_of_network);
         predictions = getResultVer2(data,results,x2(:,i),avgSims);
     end
