@@ -16,13 +16,13 @@ trainingFunction = 'trainscg';
 
 sixOutputNetwork = createNetwork(layers, trainingInstances, ...
     trainingLabels, topology, trainingFunction);
+sixOutputNetwork = ...
+    train(sixOutputNetwork, trainingInstances, trainingLabels);
 
 save('six_output_network_clean.mat', 'sixOutputNetwork');
 
-
 % a six-output neural network
-%six_output_network = cross_validation(x, y, indices, 10, 0);
-
+%cross_validation(x, y, indices, 10, 0);
 
 %save(pred, 'predictions');
 
