@@ -51,7 +51,7 @@ end
 % This function is used to to transform a the results for given data from y 
 % to binary. i.e. for label 4, for all  the values of 4 in matrix being 
 % 4 will be changed to 1 and rest to 0.
-function [ output ] = change_output_labels_to_binary( label_matrix, label)
+function [output] = change_output_labels_to_binary(label_matrix, label)
     output = zeros(size(label_matrix));
     for i = 1:size(label_matrix)
         output(i) = (label_matrix(i) == label)

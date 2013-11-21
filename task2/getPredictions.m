@@ -1,7 +1,10 @@
-function prediction = getPredictions(net, x2, type_of_network)
-    if type_of_network==0
-        prediction = NNout2labels(sim(net,x2));
+%
+% Getting the output of the neural using x2 as an input
+%
+function predictions = getPredictions(net, x2, typeOfNetwork)
+    if(typeOfNetwork == 0)
+        predictions = NNout2labels(sim(net,x2));
     else
-        prediction = NNout2labels(sim(net,x2));
+        predictions = NNout2labels(sim(net,x2));
     end
 end

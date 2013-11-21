@@ -5,7 +5,7 @@
 % Output the best network
 function [result] = cross_validation(instances, labels, index, K, type)
     training_functions = {'trainbfg','traincgb','traincgf','traincgp','traingda','traingdm','traingdx','trainlm','trainoss','trainrp','trainscg'};
-    % we will find the best number of layers, the best number of netrons in
+    % We will find the best number of layers, the best number of neurons in
     % each layer, training functions and best topology
     best_n = 3;
     best_err = 1;
