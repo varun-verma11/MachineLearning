@@ -120,14 +120,3 @@ function [result] = cross_validation(instances, labels, index, K, type)
     result.trainParam.showWindow = false;
     result = train(result, instances, labels);
 end
-
-function [trainX, trainY, validX, validY] = ...
-    get_data_from_fold (instances, labels, indexs, inde)
-% Gets training and valid data from x, and y using indices in fold inde
-        test = indexs == inde;
-        train = ~test;
-        validX = instances(test, :);
-        validY = labels(test, :);
-        trainX = instances(train, :);
-        trainY = labels(train, :);
-end
