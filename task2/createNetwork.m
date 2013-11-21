@@ -9,7 +9,7 @@
 % Topology = 3 -> create a cascase forward network
 %
 function net = createNetwork(layers, trainingInstances, ...
-    trainingLabels, topology, trainingEpochs, trainingFunction)
+    trainingLabels, topology, trainingFunction)
 
     % Create a feed forward tolopology network
     if (topology == 1)
@@ -31,10 +31,10 @@ function net = createNetwork(layers, trainingInstances, ...
     %net.divideFcn = 'dividetrain';
    
     % Configure training
-    net.trainParam.epochs = trainingEpochs;
+    net.trainParam.epochs = 100;
     net.trainFcn = trainingFunction;
     net.trainParam.showWindow = false; % Always false
     
     % Train the network
-    net = train(net, trainingInstances, trainingLabels);
+    %net = train(net, trainingInstances, trainingLabels);
 end

@@ -3,14 +3,19 @@ function main ()
 load('cleandata_students.mat');
 load('cleandata_students_10_fold_indices.mat');
 
+% TODO
+% refactor code in cross_validation that optimaises parameters using 
+% the first fold 
+% [layers, topology, trainingFunction] = ...
+%    getOptimalParams(...);
+
 layers = [3, 3, 3];
 topology = 3; % Cascade feed forward network
-trainingEpochs = 100;
 trainingFunction = 'trainscg';
 [trainingInstances, trainingLabels] = ANNdata (x, y);
 
 sixOutputNetwork = createNetwork(layers, trainingInstances, ...
-    trainingLabels, topology, trainingEpochs, trainingFunction);
+    trainingLabels, topology, trainingFunction);
 
 save('six_output_network_clean.mat', 'sixOutputNetwork');
 

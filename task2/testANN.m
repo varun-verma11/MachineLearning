@@ -11,11 +11,11 @@ function predictions = testANN(net, x2)
     numberOfExamples = length(x2);
 
     % Determine the type of network we're using
-    sixOutputNetwork = length(net) == 6;
+    sixOutputNetwork = length(net) == 1;
         
     % A single neural network with 6 outputs for each example
     if(sixOutputNetwork)
-        results = sim(net, x2');
+        results = sim(net, x2);
 
     % 6 neural networks with 1 output for each example
     else
@@ -26,7 +26,7 @@ function predictions = testANN(net, x2)
         % Foreach emotion neural network...
         for i = 1:6
             currentNeuralNetwork = net(i);
-            results(i, :) = sim(currentNeuralNetwork, x2');
+            results(i, :) = sim(currentNeuralNetwork, x2);
         end
     end
 
