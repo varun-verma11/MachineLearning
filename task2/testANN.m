@@ -21,13 +21,15 @@ function predictions = testANN(net, x2)
     else
 
         % Initialise an empty matrix
-        results = zeros(numberOfNeuralNetworks, numberOfExamples);
+        %results = zeros(numberOfNeuralNetworks, numberOfExamples);
 
         % Foreach emotion neural network...
         for i = 1:6
-            currentNeuralNetwork = net(i);
-            results(i, :) = sim(currentNeuralNetwork, x2);
+            currentNeuralNetwork = net{i};
+            %results(i) = sim(currentNeuralNetwork, x2);
+            results{i,:} = sim(currentNeuralNetwork, x2);
         end
+        results = cell2mat(results);
     end
 
     % A vector of 1 x numberOfExamples of labels for each example

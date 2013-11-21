@@ -34,8 +34,8 @@ function [layers, trainingFunction, topology] = ...
             %make the labels trainnable
             tY = transpose(load_data(trainY_,type));
             validY = transpose(load_data(validY,type));
+            vY = validY;
         end
-        
         
         best_n_in_this_subfold = 3;
         best_err_in_this_subfold = 1;
@@ -107,9 +107,9 @@ function [layers, trainingFunction, topology] = ...
                 best_topology =  best_topology_in_this_subfold;
                 best_training_function = best_training_function_in_this_subfold;
         end
+    end
     display(best_n);
     fprintf('\nIn conclude, best training function is %s and best topology is %d with error rate %d in validation set\n',best_training_function,best_topology,best_err);
-    end
     save('optimise_parameters_analysis.mat', 'results');
 end
  
