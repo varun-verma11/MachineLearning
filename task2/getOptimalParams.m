@@ -42,7 +42,7 @@ function [layers, trainingFunction, topology] = ...
         best_training_function_in_this_subfold = '';
         best_topology_in_this_subfold = 4;
         %Train topology, for 1-3 see createNetwork
-        for topology=3:3
+        for topology=1:3
             %optimise first hidden layers max 3 neturons in this layer
             for a=1:3   %1
                     % optimise second layers as well 
@@ -85,8 +85,6 @@ function [layers, trainingFunction, topology] = ...
                                     training_functions{z};
                                 best_net_err_local = mse_err;
                             end
-                            
-                            
                         end
                         %save the best error in subfold
                         if( best_net_err_local<best_err_in_this_subfold)
