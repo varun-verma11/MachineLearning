@@ -22,17 +22,21 @@ sixOutputNetwork = ...
 save('six_output_network_clean.mat', 'sixOutputNetwork');
 
 % a six-output neural network
-%cross_validation(x, y, indices, 10);
+cross_validation_six('cleandata_students.mat', x, y, indices, 10);
 
+%six single-output neural network
 cross_validation_single('cleandata_students.mat', x, y, indices, 10);
-%save(pred, 'predictions');
+
+
+
 
 load('noisydata_students.mat');
 load('noisydata_students_10_fold_indices.mat');
 
 % a six-output neural network
-%cross_validation(x, y, indices, 10);
+cross_validation_six('noisydata_students.mat', x, y, indices, 10);
 
+%six single-output neural network
 cross_validation_single('noisydata_students.mat', x, y, indices, 10);
 
 end

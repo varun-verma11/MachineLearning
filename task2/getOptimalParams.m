@@ -4,13 +4,16 @@ function [layers, trainingFunction, topology] = ...
                           'traincgb','traincgf','traincgp',...
                           'traingda','traingdx', ...
                            'trainoss','trainrp'};
-    %training_functions = {'trainscg', 'traingdm', 'trainlm'};
+    % training_functions = {'trainscg', 'traingdm', 'trainlm'};
     % We will find the best number of layers, the best number of neurons in
     % each layer, training functions and best topology
     best_n = 3;
     best_err = 1;
     best_topology = 4;
     best_training_function = '';
+    
+    % type == 0: train one 6-output neural network 
+    % type == 1:6  train one single-output neural network for emotion type
     type = 0;
     
     % initialise results structure

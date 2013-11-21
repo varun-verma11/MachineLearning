@@ -32,12 +32,12 @@ function net = createNetwork(layers, trainingInstances, ...
    
     % Configure training
     net.trainFcn = trainingFunction;
-    net.trainParam.epochs = 100;
     net.trainParam.showWindow = false; % Always false
-    net.divideFcn = 'dividerand';
-    net.divideParam.trainRatio = 0.8;
-    net.divideParam.valRatio = 0.2;
-    net.divideParam.testRatio = 0;
+    %net.divideFcn = 'dividetrain';
+    net.trainParam.epochs = 100;
+    %net.divideParam.trainRatio = 0.8;
+    %net.divideParam.valRatio = 0.2;
+    %net.divideParam.testRatio = 0;
     
     % Train the network
     %net = train(net, trainingInstances, trainingLabels);
