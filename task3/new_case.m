@@ -1,13 +1,6 @@
-function [ new_case ] = new_case( example, target )
+function [ new_case ] = new_case( active_AUs, target )
 
-% check all elements are either 0 or 1
-assert(isempty(example(example<0)));
-assert(isempty(example(example>1)));
-
-% generate indices of non-zero elements
-indices_of_ones = find(example);
-
-new_case = struct('problem', indices_of_ones,...
+new_case = struct('problem', active_AUs,...
                   'solution', target,...
                   'typicality', 1);
 

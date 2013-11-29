@@ -5,4 +5,3 @@ function [ case_solved ] = reuse( new_case, previous_case )
     case_solved = new_case;
     case_solved.solution = previous_case.solution;
 end
-
