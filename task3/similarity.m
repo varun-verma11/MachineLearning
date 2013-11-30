@@ -3,11 +3,19 @@ sim=similarity1(vec1, vec2);
 end
 function sim = similarity1(vec1, vec2)
 %cos-similarity
-if length(vec1) >= length(vec2)
-    sim = sum(ismember(vec1,vec2))/length(vec1);
-else
-    sim = sum(ismember(vec2,vec1))/length(vec2);
+x1 = zeros(45,1);
+x2 = zeros(45,1);
+for i=1:length(vec1)
+    x1(vec1(i)) = 1;
 end
+for i=1:length(vec2)
+    x2(vec2(i)) = 1;
+end
+sim = findcosSimilarity(x1,x2);
+end
+function[sim] = findcosSimilarity(instance,compare)
+    sim = dot(instance,compare)/...
+        ((dot(instance,instance)*dot(compare,compare))^0.5);
 end
 function sim = similarity2(vec1, vec2)
     dist = sqrt(sum(~ismember(vec1,vec2))+sum(~ismember(vec2,vec1)));
