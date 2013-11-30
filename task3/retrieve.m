@@ -49,12 +49,13 @@ function [ matched_case ] = find_knn( match_list, k )
     match_list = reverse(sortcell(match_list, 2));
 
     %need at least k elements in the list of best matches
-    [length_of_list,~] = size(match_list);
+    length_of_list = length(match_list);
     k = min(k, length_of_list);
 
     %reduce the list to k elements
     if (length_of_list > k && match_list{k, 2} == match_list{k+1, 2})
-        reduced_list = reduce(match_list,k);
+%         reduced_list = reduce(match_list,k);
+        reduced_list = match_list(1:k,:);
     else
         % take first k elements of match list
         reduced_list = match_list(1:k, :);
@@ -175,9 +176,10 @@ function [ reduced_list ] = reduce( match_list, k )
     
     % sort list by typicality in descending order
     list_by_typicality = reverse(sortcell(list_by_typicality, 2));
-
+    display(reduced_list);
     if (list_by_typicality{num_of_tie_elements, 2} == ...
             list_by_typicality{num_of_tie_elements+1, 2})
+        display('in if');
         similarity_values = cell2mat(list_by_typicality(:,2));
         value = list_by_typicality{num_of_tie_elements, 2};
 
