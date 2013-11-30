@@ -13,7 +13,7 @@ cross_validation('clean', x, y, indices, 10);
 % cross validation on noisy data
 load('noisydata_students.mat');
 load('noisydata_10_fold_indices.mat');
-%cross_validation('noisy', x, y, indices, 10);
+cross_validation('noisy', x, y, indices, 10);
 
 end
 

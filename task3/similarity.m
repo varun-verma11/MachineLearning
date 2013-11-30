@@ -1,5 +1,7 @@
-function sim = similarity(vec1, vec2, version)
-    version = 1;
+function sim = similarity(vec1, vec2)
+    % similarity function version 2 gives the highest
+    % classification rate  
+    version = 2;
     
     if (version == 1)
         sim=similarity1(vec1, vec2);
