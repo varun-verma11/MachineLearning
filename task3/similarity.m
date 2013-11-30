@@ -17,6 +17,7 @@ function[sim] = findcosSimilarity(instance,compare)
     sim = dot(instance,compare)/...
         ((dot(instance,instance)*dot(compare,compare))^0.5);
 end
+
 function sim = similarity2(vec1, vec2)
     dist = sqrt(sum(~ismember(vec1,vec2))+sum(~ismember(vec2,vec1)));
     max_dist = sqrt(45);
