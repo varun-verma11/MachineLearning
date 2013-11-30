@@ -16,7 +16,7 @@ function [ cbr ] = CBRinit(examples, labels)
     % adds each example to the cbr
     for i = 1:N
        % Constructs a new case from the ith example and label
-       new_c = get_ith_new_case(examples(i, :), labels(i,:));
+       new_c = build_case(examples(i, :), labels(i,:));
        cbr = CBRadd(cbr, new_c);
     end  
 end
@@ -43,26 +43,4 @@ function check_input(examples, labels)
     assert(examples_rows == labels_rows);
     assert(examples_cols == 45);
     assert(labels_cols == 1);
-end
-
-function [ new_c ] = get_ith_new_case(example, label)
-% Constructs a new case from the ith example and label
-    % checks that the label is within range
-    assert(label >=1 && label <= 6);
-    % obtains the indices for the active AUs
-    active_AUs = get_active_AUs(example);
-
-    new_c = new_case(active_AUs, label);
-end
-
-function [ active_AUs ] = get_active_AUs(example)
-% takes in a [1*45] binary AU vector and 
-%returns an vector that contains the active AUs
-
-   % check all elements are either 0 or 1
-   assert(isempty(example(example<0)));
-   assert(isempty(example(example>1)));
-   
-   % generate indices of non-zero elements
-   active_AUs = find(example);
 end

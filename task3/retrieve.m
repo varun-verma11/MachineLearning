@@ -1,6 +1,5 @@
 function [ most_similar_case ] = retrieve( cbr, case_to_find )
-%RETRIEVE Summary of this function goes here
-%   Detailed explanation goes here
+%RETRIEVE 
 % we use k-nearest neighbour learning adn consider the 2 most clostest
 % neighbour
 
