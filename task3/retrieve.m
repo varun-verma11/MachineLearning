@@ -49,7 +49,7 @@ function [ matched_case ] = find_knn( match_list, k )
     match_list = reverse(sortcell(match_list, 2));
 
     %need at least k elements in the list of best matches
-    length_of_list = length(match_list);
+    [length_of_list,~] = size(match_list);
     k = min(k, length_of_list);
 
     %reduce the list to k elements

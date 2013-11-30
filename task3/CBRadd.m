@@ -4,7 +4,6 @@ function [ cbr ] = CBRadd( cbr, case_to_add )
 
     % flag that enables early exit when the case_to_add is added
     added = 0;
-    
     % checks that the case_to_add has been solved
     assert(case_to_add.solution >=1 && case_to_add.solution <= 6);
     
