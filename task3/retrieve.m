@@ -54,8 +54,8 @@ function [ matched_case ] = find_knn( match_list, k )
 
     %reduce the list to k elements
     if (length_of_list > k && match_list{k, 2} == match_list{k+1, 2})
-%         reduced_list = reduce(match_list,k);
-        reduced_list = match_list(1:k,:);
+         reduced_list = reduce(match_list,k);
+%         reduced_list = match_list(1:k,:);
     else
         % take first k elements of match list
         reduced_list = match_list(1:k, :);
@@ -176,32 +176,27 @@ function [ reduced_list ] = reduce( match_list, k )
     
     % sort list by typicality in descending order
     list_by_typicality = reverse(sortcell(list_by_typicality, 2));
-    display(reduced_list);
-    if (list_by_typicality{num_of_tie_elements, 2} == ...
-            list_by_typicality{num_of_tie_elements+1, 2})
-        display('in if');
-        similarity_values = cell2mat(list_by_typicality(:,2));
-        value = list_by_typicality{num_of_tie_elements, 2};
+    similarity_values = cell2mat(list_by_typicality(:,2));
+    value = list_by_typicality{num_of_tie_elements, 2};
 
-        % add elements to reduced list by typicality value first
-        reduced_list = vertcat(reduced_list, ...
-            list_by_typicality(similarity_values > value, :));
+    % add elements to reduced list by typicality value first
+    reduced_list = vertcat(reduced_list, ...
+        list_by_typicality(similarity_values > value, :));
 
-        % recheck whether more elements are needed to be removed from reduced list
+    % recheck whether more elements are needed to be removed from reduced list
+    [ num_existing, ~ ] = size(reduced_list);
+    num_of_tie_elements = k - num_existing;
+
+    if (num_of_tie_elements > 0)
+        % still not enough - select at random
+        list_to_reduce = list_by_typicality(similarity_values == value, :);
+        [ num_to_choose_from, ~ ] = size(list_to_reduce);
+        reduced_list =...
+            vertcat(reduced_list,...
+            list_by_typicality(...
+            randomvals(num_to_choose_from, num_of_tie_elements),:));
+
         [ num_existing, ~ ] = size(reduced_list);
-        num_of_tie_elements = k - num_existing;
-
-        if (num_of_tie_elements > 0)
-            % still not enough - select at random
-            list_to_reduce = list_by_typicality(similarity_values == value, :);
-            [ num_to_choose_from, ~ ] = size(list_to_reduce);
-            reduced_list =...
-                vertcat(reduced_list,...
-                list_by_typicality(...
-                randomvals(num_to_choose_from, num_of_tie_elements),:));
-
-            [ num_existing, ~ ] = size(reduced_list);
-            assert(num_existing == k);
-        end
+        assert(num_existing == k);
     end
 end
